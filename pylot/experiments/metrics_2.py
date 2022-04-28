@@ -1,9 +1,7 @@
 import absl.app
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import pandas as pd
-import time
 
 import erdos
 from erdos.operator import OperatorConfig
@@ -65,10 +63,6 @@ def main(argv):
     driver_handle = erdos.run_async()
     stream_traj(traj_stream, timepoint, past_steps, traj)
     preds = store_pred_stream(extract_stream)
-    # NOTE: I would like to call driver_handle.wait() below instead of
-    #       sleep+shutdown, but the process hangs for some reason
-    time.sleep(0.1)
-    driver_handle.shutdown()
 
     # Dictionary mapping agent IDs to ADEs/FDEs
     ADEs, FDEs = {}, {}
@@ -89,6 +83,8 @@ def main(argv):
 
     if debug:
         plt.show()
+
+    driver_handle.shutdown()
 
 if __name__ == '__main__':
     absl.app.run(main)
